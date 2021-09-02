@@ -36,10 +36,6 @@ public class ArrayListProductDao implements ProductDao {
                 .collect(Collectors.toList());
     }
 
-    public List<Product> getAllProducts(){
-        return products;
-    }
-
     @Override
     public void save(Product product) {
         synchronized (lock) {
