@@ -1,7 +1,5 @@
 package com.es.phoneshop.model.product;
 
-import jdk.nashorn.internal.objects.NativeUint8Array;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
