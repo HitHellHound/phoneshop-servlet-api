@@ -1,10 +1,9 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
@@ -12,7 +11,7 @@ public class ArrayListProductDao implements ProductDao {
     private long maxId;
     private final Object lock = new Object();
 
-    public ArrayListProductDao(){
+    public ArrayListProductDao() {
         this.products = new ArrayList<>();
         saveSampleProducts();
     }
@@ -26,8 +25,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts() {
+    public List<Product> findProducts(String query) {
+        Comparator<Product> queryComparator = (product1, product2) -> {
+            int result = (int)(matchesWithQuery(query, product2.getDescription()) - matchesWithQuery(query, product1.getDescription()));
+            return result;
+        };
         return products.stream()
+                .filter(product -> query == null || query.equals("") || matchesWithQuery(query, product.getDescription()) > 0)
+                .sorted(queryComparator)
                 .filter(product -> product.getPrice() != null && product.getStock() > 0)
                 .collect(Collectors.toList());
     }
@@ -52,7 +57,18 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private void saveSampleProducts(){
+    private long matchesWithQuery(String query, String name){
+        String lcName = name.toLowerCase();
+        return Arrays.stream(query.toLowerCase().split("[\\p{Blank}\\p{Punct}]+"))
+                .filter(queryWord -> {
+                    Pattern pattern = Pattern.compile("(^|[\\p{Blank}\\p{Punct}])" + queryWord + "([\\p{Blank}\\p{Punct}]|$)");
+                    Matcher matcher = pattern.matcher(lcName);
+                    return !queryWord.equals("") && matcher.find();
+                })
+                .count();
+    }
+
+    private void saveSampleProducts() {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
