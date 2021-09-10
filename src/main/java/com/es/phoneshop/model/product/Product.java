@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.util.*;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -13,6 +14,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private LinkedList<Price> priceHistory;
 
     public Product() {
     }
@@ -21,7 +23,7 @@ public class Product {
         this.id = id;
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.setPrice(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -30,7 +32,7 @@ public class Product {
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.setPrice(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -66,6 +68,13 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        if (priceHistory == null) {
+            priceHistory = new LinkedList<>();
+        }
+        priceHistory.addFirst(new Price(price, new Date()));
+        if (priceHistory.size() > 10) {
+            priceHistory.removeLast();
+        }
     }
 
     public Currency getCurrency() {
@@ -90,5 +99,12 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Price> getPriceHistory() {
+        return priceHistory;
+    }
+
+    public void setPriceHistory(List<Price> priceHistory) {
     }
 }

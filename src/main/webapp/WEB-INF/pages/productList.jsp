@@ -39,7 +39,7 @@
           </a>
         </td>
         <td class="price">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <tags:popupPriceHistory product="${product}"/>
         </td>
       </tr>
     </c:forEach>
