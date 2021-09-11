@@ -10,10 +10,10 @@ public class ArrayListProductDao implements ProductDao {
 
     private List<Product> products;
     private long maxId;
-    private static final Object lock = new Object();
+    private final Object lock = new Object();
 
     public static ProductDao getInstance() {
-        synchronized (lock) {
+        synchronized (ArrayListProductDao.class) {
             if (instance == null) {
                 instance = new ArrayListProductDao();
             }
@@ -47,8 +47,7 @@ public class ArrayListProductDao implements ProductDao {
         synchronized (lock) {
             if (product.getId() != null) {
                 products.set(products.indexOf(getProduct(product.getId())), product);
-            }
-            else {
+            } else {
                 product.setId(maxId++);
                 products.add(product);
             }
@@ -60,6 +59,12 @@ public class ArrayListProductDao implements ProductDao {
         synchronized (lock) {
             products.remove(getProduct(id));
         }
+    }
+
+    @Override
+    public void clear() {
+        products.clear();
+        maxId = 0;
     }
 
     private long matchesWithQuery(String query, String name) {
@@ -77,14 +82,12 @@ public class ArrayListProductDao implements ProductDao {
         Comparator<Product> comparator = Comparator.comparing(product -> {
             if (sortField == SortField.description) {
                 return (Comparable) product.getDescription();
-            }
-            else if (sortField == SortField.price) {
+            } else if (sortField == SortField.price) {
                 return (Comparable) product.getPrice();
             }
             if (query != null && !query.equals("")) {
                 return (Comparable) matchesWithQuery(query, product.getDescription());
-            }
-            else {
+            } else {
                 return (Comparable) 0;
             }
         });

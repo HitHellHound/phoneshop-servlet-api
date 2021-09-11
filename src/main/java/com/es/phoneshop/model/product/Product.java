@@ -8,13 +8,17 @@ public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
-    private LinkedList<Price> priceHistory;
+    private LinkedList<PriceHystoryEntry> priceHistory;
 
     public Product() {
     }
@@ -71,7 +75,7 @@ public class Product {
         if (priceHistory == null) {
             priceHistory = new LinkedList<>();
         }
-        priceHistory.addFirst(new Price(price, new Date()));
+        priceHistory.addFirst(new PriceHystoryEntry(price, new Date()));
         if (priceHistory.size() > 10) {
             priceHistory.removeLast();
         }
@@ -101,10 +105,10 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public List<Price> getPriceHistory() {
+    public List<PriceHystoryEntry> getPriceHistory() {
         return priceHistory;
     }
 
-    public void setPriceHistory(List<Price> priceHistory) {
+    public void setPriceHistory(List<PriceHystoryEntry> priceHistory) {
     }
 }

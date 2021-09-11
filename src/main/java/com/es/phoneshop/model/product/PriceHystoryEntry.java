@@ -3,14 +3,14 @@ package com.es.phoneshop.model.product;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class Price {
+public class PriceHystoryEntry {
     private BigDecimal price;
     private Date startDate;
 
-    public Price() {
+    public PriceHystoryEntry() {
     }
 
-    public Price(BigDecimal price, Date startDate) {
+    public PriceHystoryEntry(BigDecimal price, Date startDate) {
         this.price = price;
         this.startDate = startDate;
     }
