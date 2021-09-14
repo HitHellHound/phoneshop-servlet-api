@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.util.*;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -7,12 +8,17 @@ public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
+    /**
+     * null means there is no price because the product is outdated or new
+     */
     private BigDecimal price;
-    /** can be null if the price is null */
+    /**
+     * can be null if the price is null
+     */
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private LinkedList<PriceHystoryEntry> priceHistory;
 
     public Product() {
     }
@@ -21,7 +27,7 @@ public class Product {
         this.id = id;
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.setPrice(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -30,7 +36,7 @@ public class Product {
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
-        this.price = price;
+        this.setPrice(price);
         this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
@@ -66,6 +72,13 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        if (priceHistory == null) {
+            priceHistory = new LinkedList<>();
+        }
+        priceHistory.addFirst(new PriceHystoryEntry(price, new Date()));
+        if (priceHistory.size() > 10) {
+            priceHistory.removeLast();
+        }
     }
 
     public Currency getCurrency() {
@@ -90,5 +103,12 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<PriceHystoryEntry> getPriceHistory() {
+        return priceHistory;
+    }
+
+    public void setPriceHistory(List<PriceHystoryEntry> priceHistory) {
     }
 }
