@@ -12,10 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private boolean productAddedToCart;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -26,7 +29,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("product", productDao.getProduct(parseProductId(request)));
+        Long productId = parseProductId(request);
+        if (request.getParameter("message") != null && productAddedToCart != false) {
+                request.setAttribute("message", request.getParameter("message"));
+                productAddedToCart = false;
+        }
+        request.setAttribute("product", productDao.getProduct(productId));
         request.setAttribute("cart", cartService.getCart());
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
@@ -38,9 +46,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
         int quantity;
         try {
-            quantity = Integer.valueOf(quantityString);
+            NumberFormat format = NumberFormat.getInstance(request.getLocale());
+            quantity = format.parse(quantityString).intValue();
             cartService.add(productId, quantity);
-        } catch (NumberFormatException ex) {
+        } catch (ParseException ex) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
             return;
@@ -49,9 +58,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request, response);
             return;
         }
-        request.setAttribute("message", "Product added to cart");
+        productAddedToCart = true;
 
-        doGet(request, response);
+        response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Product added to cart");
     }
 
     private Long parseProductId(HttpServletRequest request) {
