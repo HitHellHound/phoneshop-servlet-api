@@ -6,23 +6,20 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance;
-
     private List<Product> products;
     private long maxId;
     private final Object lock = new Object();
 
-    public static ProductDao getInstance() {
-        synchronized (ArrayListProductDao.class) {
-            if (instance == null) {
-                instance = new ArrayListProductDao();
-            }
-        }
-        return instance;
-    }
-
     private ArrayListProductDao() {
         this.products = new ArrayList<>();
+    }
+
+    private static class SingletonHelper {
+        private static final ArrayListProductDao INSTANCE = new ArrayListProductDao();
+    }
+
+    public static ArrayListProductDao getInstance() {
+        return ArrayListProductDao.SingletonHelper.INSTANCE;
     }
 
     @Override

@@ -17,7 +17,7 @@
         </div>
     </c:if>
   <p>
-    ${sessionScope.cart}
+    ${cart}
   </p>
   <form method="post">
     <table>

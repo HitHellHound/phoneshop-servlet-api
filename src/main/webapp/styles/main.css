@@ -33,6 +33,11 @@ img.product-tile {
 .success {
   color: green;
 }
+.viewed-products {
+  text-align: center;
+  width: 120px;
+  height: 120px;
+}
 
 .popup {
   position: fixed;

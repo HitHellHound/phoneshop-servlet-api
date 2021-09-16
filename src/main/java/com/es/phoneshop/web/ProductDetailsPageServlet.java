@@ -4,6 +4,9 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
+import com.es.phoneshop.model.features.recently.viewed.DefaultRecentlyViewedService;
+import com.es.phoneshop.model.features.recently.viewed.RecentlyViewedProducts;
+import com.es.phoneshop.model.features.recently.viewed.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 
@@ -19,6 +22,7 @@ import java.text.ParseException;
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
+    private RecentlyViewedService recentlyViewedService;
     private boolean productAddedToCart;
 
     @Override
@@ -26,17 +30,20 @@ public class ProductDetailsPageServlet extends HttpServlet {
         super.init(config);
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
+        recentlyViewedService = DefaultRecentlyViewedService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = parseProductId(request);
         if (request.getParameter("message") != null && productAddedToCart != false) {
-                request.setAttribute("message", request.getParameter("message"));
-                productAddedToCart = false;
+            request.setAttribute("message", request.getParameter("message"));
+            productAddedToCart = false;
         }
         request.setAttribute("product", productDao.getProduct(productId));
         request.setAttribute("cart", cartService.getCart(request));
+        RecentlyViewedProducts viewedProducts = recentlyViewedService.getRecentlyViewedProducts(request);
+        recentlyViewedService.add(viewedProducts, productId);
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 
