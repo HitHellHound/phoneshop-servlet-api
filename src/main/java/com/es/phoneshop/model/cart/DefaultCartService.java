@@ -35,7 +35,7 @@ public class DefaultCartService implements CartService {
     @Override
     public synchronized void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         Product product = productDao.getProduct(productId);
-        CartItem cartItem = cart.findItemInCart(product);
+        CartItem cartItem = cart.findItem(product);
         if (cartItem != null) {
             if (product.getStock() < quantity + cartItem.getQuantity()) {
                 throw new OutOfStockException(product, quantity, product.getStock() - cartItem.getQuantity());

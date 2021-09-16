@@ -8,8 +8,8 @@
   <h1>
     ${product.description}
   </h1>
-    <c:if test="${not empty message}">
-        <div class="success">${message}</div>
+    <c:if test="${not empty param.message and empty error}">
+        <div class="success">${param.message}</div>
     </c:if>
     <c:if test="${not empty error}">
         <div class="error">
@@ -48,8 +48,7 @@
       <tr>
         <td>Quantity</td>
         <td class="quantity">
-          <input name="quantity" class="quantity" value="${not empty param.quantity
-              or not empty error and not empty param.quantity ? param.quantity : 1}">
+          <input name="quantity" class="quantity" value="${not empty error and not empty param.quantity ? param.quantity : 1}">
           <button>Add to cart</button>
           <c:if test="${not empty error}">
               <div class="error">${error}</div>

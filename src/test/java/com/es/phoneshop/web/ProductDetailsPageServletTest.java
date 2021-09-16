@@ -16,7 +16,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -32,6 +32,8 @@ public class ProductDetailsPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
+    @Mock
+    private HttpSession session;
 
     private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
     private Long productId;
@@ -53,6 +55,8 @@ public class ProductDetailsPageServletTest {
     @Test
     public void testDoGet() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn("/" + productId);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute(any())).thenReturn(null);
         servlet.doGet(request, response);
 
         InOrder inOrder = Mockito.inOrder(request, requestDispatcher);

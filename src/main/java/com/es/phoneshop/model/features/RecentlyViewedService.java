@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.features.recently.viewed;
+package com.es.phoneshop.model.features;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -4,9 +4,9 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
-import com.es.phoneshop.model.features.recently.viewed.DefaultRecentlyViewedService;
-import com.es.phoneshop.model.features.recently.viewed.RecentlyViewedProducts;
-import com.es.phoneshop.model.features.recently.viewed.RecentlyViewedService;
+import com.es.phoneshop.model.features.DefaultRecentlyViewedService;
+import com.es.phoneshop.model.features.RecentlyViewedProducts;
+import com.es.phoneshop.model.features.RecentlyViewedService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 
@@ -23,7 +23,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductDao productDao;
     private CartService cartService;
     private RecentlyViewedService recentlyViewedService;
-    private boolean productAddedToCart;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -36,10 +35,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long productId = parseProductId(request);
-        if (request.getParameter("message") != null && productAddedToCart != false) {
-            request.setAttribute("message", request.getParameter("message"));
-            productAddedToCart = false;
-        }
         request.setAttribute("product", productDao.getProduct(productId));
         request.setAttribute("cart", cartService.getCart(request));
         RecentlyViewedProducts viewedProducts = recentlyViewedService.getRecentlyViewedProducts(request);
@@ -67,7 +62,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request, response);
             return;
         }
-        productAddedToCart = true;
 
         response.sendRedirect(request.getContextPath() + "/products/" + productId + "?message=Product added to cart");
     }

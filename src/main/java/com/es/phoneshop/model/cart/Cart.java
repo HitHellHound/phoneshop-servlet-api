@@ -16,7 +16,7 @@ public class Cart {
         return items;
     }
 
-    public CartItem findItemInCart(Product product) {
+    public CartItem findItem(Product product) {
         return items.stream()
                 .filter(item -> item.getProduct() == product)
                 .findAny()
