@@ -4,10 +4,11 @@ import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class DefaultCartService implements CartService {
     private static DefaultCartService instance;
 
-    private Cart cart = new Cart();
     private ProductDao productDao;
 
     public static DefaultCartService getInstance() {
@@ -24,12 +25,16 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public Cart getCart() {
+    public synchronized Cart getCart(HttpServletRequest request) {
+        Cart cart = (Cart) request.getSession().getAttribute("cart");
+        if (cart == null) {
+            request.getSession().setAttribute("cart", cart = new Cart());
+        }
         return cart;
     }
 
     @Override
-    public void add(Long productId, int quantity) throws OutOfStockException {
+    public synchronized void add(Cart cart, Long productId, int quantity) throws OutOfStockException {
         Product product = productDao.getProduct(productId);
         CartItem cartItem = cart.findItemInCart(product);
         if (cartItem != null) {

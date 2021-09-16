@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
@@ -35,7 +36,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
                 productAddedToCart = false;
         }
         request.setAttribute("product", productDao.getProduct(productId));
-        request.setAttribute("cart", cartService.getCart());
+        request.setAttribute("cart", cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
     }
 
@@ -44,11 +45,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Long productId = parseProductId(request);
         String quantityString = request.getParameter("quantity");
 
+        Cart cart = cartService.getCart(request);
         int quantity;
         try {
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
             quantity = format.parse(quantityString).intValue();
-            cartService.add(productId, quantity);
+            cartService.add(cart, productId, quantity);
         } catch (ParseException ex) {
             request.setAttribute("error", "Not a number");
             doGet(request, response);
