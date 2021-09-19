@@ -30,8 +30,7 @@ public class DemoDataServletContextListener implements ServletContextListener {
                 for (int i = 0; i < 30; i++) {
                     try {
                         Thread.sleep(10000);
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     product.setPrice(BigDecimal.valueOf(50 + random.nextInt(100)));

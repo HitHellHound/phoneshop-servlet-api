@@ -1,4 +1,5 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <%@ attribute name="pageTitle" required="true" %>
 
 <html>
@@ -17,6 +18,7 @@
   <main>
     <jsp:doBody/>
   </main>
+  <tags:recentlyViewed/>
   <p>
     (c)Expert-Soft
   </p>
