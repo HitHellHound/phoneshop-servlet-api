@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +33,7 @@ public class DefaultCartServiceTest {
         cartService = DefaultCartService.getInstance();
         cart = new Cart();
         testProduct = new Product("test", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
+        ArrayListProductDao.getInstance().save(testProduct);
     }
 
     @After
@@ -59,16 +59,37 @@ public class DefaultCartServiceTest {
 
     @Test
     public void testAdd() throws OutOfStockException {
-        Product testProduct = new Product("test", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-        ArrayListProductDao.getInstance().save(testProduct);
         cartService.add(cart, testProduct.getId(), 2);
         Product result = cart.findItem(testProduct).getProduct();
         assertSame(testProduct, result);
     }
 
+    @Test
+    public void testAddExistingProduct() throws OutOfStockException {
+        cartService.add(cart, testProduct.getId(), 2);
+        cartService.add(cart, testProduct.getId(), 5);
+        CartItem result = cart.findItem(testProduct);
+        assertTrue(result.getQuantity() == 7);
+    }
+
     @Test(expected = OutOfStockException.class)
     public void testAddThrowsOutOfStockException() throws OutOfStockException {
-        ArrayListProductDao.getInstance().save(testProduct);
         cartService.add(cart, testProduct.getId(), 102);
+    }
+
+    @Test
+    public void testUpdate() throws OutOfStockException {
+        cartService.add(cart, testProduct.getId(), 2);
+        cartService.update(cart, testProduct.getId(), 5);
+        CartItem result = cart.findItem(testProduct);
+        assertTrue(result.getQuantity() == 5);
+    }
+
+    @Test
+    public void testDelete() throws OutOfStockException {
+        ArrayListProductDao.getInstance().save(testProduct);
+        cartService.add(cart, testProduct.getId(), 2);
+        cartService.delete(cart, testProduct.getId());
+        assertNull(cart.findItem(testProduct));
     }
 }

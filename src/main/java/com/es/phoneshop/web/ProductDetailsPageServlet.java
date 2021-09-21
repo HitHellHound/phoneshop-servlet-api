@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class ProductDetailsPageServlet extends HttpServlet {
+    protected static final String PRODUCT_DETAILS_JSP = "/WEB-INF/pages/productDetails.jsp";
     private ProductDao productDao;
     private CartService cartService;
     private RecentlyViewedService recentlyViewedService;
@@ -39,7 +40,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         request.setAttribute("cart", cartService.getCart(request));
         RecentlyViewedProducts viewedProducts = recentlyViewedService.getRecentlyViewedProducts(request);
         recentlyViewedService.add(viewedProducts, productId);
-        request.getRequestDispatcher("/WEB-INF/pages/productDetails.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_DETAILS_JSP).forward(request, response);
     }
 
     @Override

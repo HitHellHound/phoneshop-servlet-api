@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<p>
-  <h2>Recently viewed</h2>
-  <c:if test="${not empty sessionScope.recently_viewed}">
+<c:if test="${not empty sessionScope.recently_viewed}">
+  <p>
+    <h2>Recently viewed</h2>
     <table>
       <tr>
         <c:forEach var="viewed" items="${sessionScope.recently_viewed.products}">
@@ -22,5 +22,5 @@
         </c:forEach>
       </tr>
     </table>
-  </c:if>
-</p>
+  </p>
+</c:if>
