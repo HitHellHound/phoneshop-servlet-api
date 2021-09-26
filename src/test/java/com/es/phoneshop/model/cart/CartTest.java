@@ -17,6 +17,7 @@ public class CartTest {
     public void setup() {
         cart = new Cart();
         cartItem = new CartItem(new Product("test", "Samsung Galaxy S", new BigDecimal(100), null, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"), 10);
+        cartItem.getProduct().setId(0L);
     }
 
     @Test

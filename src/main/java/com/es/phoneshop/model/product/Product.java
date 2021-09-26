@@ -1,10 +1,13 @@
 package com.es.phoneshop.model.product;
 
-import java.util.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
@@ -18,7 +21,7 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
-    private LinkedList<PriceHystoryEntry> priceHistory;
+    private LinkedList<PriceHistoryEntry> priceHistory;
 
     public Product() {
     }
@@ -75,7 +78,7 @@ public class Product {
         if (priceHistory == null) {
             priceHistory = new LinkedList<>();
         }
-        priceHistory.addFirst(new PriceHystoryEntry(price, new Date()));
+        priceHistory.addFirst(new PriceHistoryEntry(price, new Date()));
         if (priceHistory.size() > 10) {
             priceHistory.removeLast();
         }
@@ -105,10 +108,10 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public List<PriceHystoryEntry> getPriceHistory() {
+    public List<PriceHistoryEntry> getPriceHistory() {
         return priceHistory;
     }
 
-    public void setPriceHistory(List<PriceHystoryEntry> priceHistory) {
+    public void setPriceHistory(List<PriceHistoryEntry> priceHistory) {
     }
 }
