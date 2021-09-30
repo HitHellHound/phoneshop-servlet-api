@@ -1,6 +1,9 @@
 package com.es.phoneshop.model.product;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -23,11 +26,11 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public Product getProduct(Long id) throws NoSuchElementException {
+    public Product getProduct(Long id) throws ProductNotFoundException {
         return products.stream()
                 .filter(product -> id.equals(product.getId()))
                 .findAny()
-                .orElseThrow(() -> new NoSuchElementException("Product with id: " + id + " is not found."));
+                .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " is not found."));
     }
 
     @Override

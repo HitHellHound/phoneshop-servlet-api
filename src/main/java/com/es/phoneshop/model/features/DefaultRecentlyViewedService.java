@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 
 public class DefaultRecentlyViewedService implements RecentlyViewedService {
-    private static final String RECENTLY_VIEWED_PRODUCTS_SESSION_ATTRIBUTE = "recently_viewed";
+    private static final String RECENTLY_VIEWED_PRODUCTS_SESSION_ATTRIBUTE = DefaultRecentlyViewedService.class.getName() + ".recentlyViewed";
     private final int MAX_SIZE_OF_RECENTLY_VIEWED_LIST = 3;
 
     private ProductDao productDao;

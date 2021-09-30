@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CartPageServlet extends HttpServlet {
-    protected static final String CART_JSP = "/WEB-INF/pages/cart.jsp";
     private CartService cartService;
 
     @Override
@@ -30,7 +29,7 @@ public class CartPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
         request.setAttribute("cart", cart);
-        request.getRequestDispatcher(CART_JSP).forward(request, response);
+        request.getRequestDispatcher(PageMappings.CART_JSP).forward(request, response);
     }
 
     @Override

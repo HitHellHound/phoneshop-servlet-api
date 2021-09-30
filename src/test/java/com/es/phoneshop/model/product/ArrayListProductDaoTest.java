@@ -137,7 +137,7 @@ public class ArrayListProductDaoTest {
         assertEquals(testProduct2.getCode(), result.getCode());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = ProductNotFoundException.class)
     public void testGetProductThrowsException() {
         productDao.getProduct(-1L);
     }
