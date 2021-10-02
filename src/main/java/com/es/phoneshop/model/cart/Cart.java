@@ -5,6 +5,7 @@ import com.es.phoneshop.model.product.Product;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 public class Cart implements Serializable {
@@ -12,14 +13,20 @@ public class Cart implements Serializable {
 
     private int totalQuantity;
     private BigDecimal totalCost;
+    private Currency currency;
 
     public Cart() {
         this.items = new ArrayList<>();
         this.totalCost = new BigDecimal(0);
+        this.currency = Currency.getInstance("USD");
     }
 
     public List<CartItem> getItems() {
         return items;
+    }
+
+    public void setItems(List<CartItem> items) {
+        this.items = items;
     }
 
     public CartItem findItem(Product product) {
@@ -43,6 +50,10 @@ public class Cart implements Serializable {
 
     public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public Currency getCurrency() {
+        return currency;
     }
 
     @Override

@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-import java.util.Random;
 
 public class DemoDataServletContextListener implements ServletContextListener {
     private ProductDao productDao;
@@ -24,18 +23,6 @@ public class DemoDataServletContextListener implements ServletContextListener {
         boolean insertDemoData = Boolean.valueOf(servletContextEvent.getServletContext().getInitParameter("insertDemoData"));
         if (insertDemoData) {
             getSampleProducts().stream().forEach(product -> productDao.save(product));
-            new Thread(() -> {
-                Product product = productDao.getProduct(0L);
-                Random random = new Random();
-                for (int i = 0; i < 30; i++) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    product.setPrice(BigDecimal.valueOf(50 + random.nextInt(100)));
-                }
-            }).start();
         }
     }
 

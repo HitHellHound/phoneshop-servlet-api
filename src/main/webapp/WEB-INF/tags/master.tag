@@ -21,7 +21,7 @@
   <main>
     <jsp:doBody/>
   </main>
-  <tags:recentlyViewed/>
+  <jsp:include page="/recently-viewed"/>
   <p>
     (c)Expert-Soft
   </p>

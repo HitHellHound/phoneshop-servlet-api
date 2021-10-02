@@ -19,9 +19,12 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 public class ProductListPageServlet extends HttpServlet {
-    protected static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
     private ProductDao productDao;
     private CartService cartService;
+
+    private static final String QUERY_PARAM = "query";
+    private static final String SORT_PARAM = "sort";
+    private static final String ORDER_PARAM = "order";
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -32,14 +35,14 @@ public class ProductListPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("query");
-        String sortField = request.getParameter("sort");
-        String sortOrder = request.getParameter("order");
+        String query = request.getParameter(QUERY_PARAM);
+        String sortField = request.getParameter(SORT_PARAM);
+        String sortOrder = request.getParameter(ORDER_PARAM);
         request.setAttribute("products", productDao.findProducts(query,
                 SortField.getValue(sortField),
                 SortOrder.getValue(sortOrder)
         ));
-        request.getRequestDispatcher(PRODUCT_LIST_JSP).forward(request, response);
+        request.getRequestDispatcher(PageMappings.PRODUCT_LIST_JSP).forward(request, response);
     }
 
     @Override
@@ -68,17 +71,26 @@ public class ProductListPageServlet extends HttpServlet {
     }
 
     private String makeRedirectPath(HttpServletRequest request) {
-        String redirectPath = request.getContextPath() + "/products?";
-        if (request.getParameter("query") != null) {
-            redirectPath += "query=" + request.getParameter("query") + "&";
+        StringBuilder redirectPath = new StringBuilder(request.getContextPath() + "/products?");
+        if (request.getParameter(QUERY_PARAM) != null) {
+            redirectPath.append(QUERY_PARAM)
+                    .append("=")
+                    .append(request.getParameter(QUERY_PARAM))
+                    .append("&");
         }
-        if (request.getParameter("sort") != null) {
-            redirectPath += "sort=" + request.getParameter("sort") + "&";
+        if (request.getParameter(SORT_PARAM) != null) {
+            redirectPath.append(SORT_PARAM)
+                    .append("=")
+                    .append(request.getParameter(SORT_PARAM))
+                    .append("&");
         }
-        if (request.getParameter("order") != null) {
-            redirectPath += "order=" + request.getParameter("order") + "&";
+        if (request.getParameter(ORDER_PARAM) != null) {
+            redirectPath.append(ORDER_PARAM)
+                    .append("=")
+                    .append(request.getParameter(ORDER_PARAM))
+                    .append("&");
         }
-        redirectPath += "message=Product added to cart";
-        return redirectPath;
+        redirectPath.append("message=Product added to cart");
+        return redirectPath.toString();
     }
 }

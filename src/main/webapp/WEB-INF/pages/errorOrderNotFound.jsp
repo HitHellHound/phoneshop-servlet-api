@@ -22,7 +22,7 @@
 </header>
 <main>
   <h1>
-    Product not found
+    Order not found
   </h1>
   <h3>
     <%=exception.getMessage()%>

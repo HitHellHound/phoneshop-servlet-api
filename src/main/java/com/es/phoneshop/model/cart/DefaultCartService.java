@@ -69,6 +69,12 @@ public class DefaultCartService implements CartService {
         recalculateCart(cart);
     }
 
+    @Override
+    public void clear(Cart cart) {
+        cart.getItems().clear();
+        recalculateCart(cart);
+    }
+
     private void recalculateCart(Cart cart) {
         cart.setTotalQuantity(cart.getItems().stream()
                 .map(CartItem::getQuantity)
