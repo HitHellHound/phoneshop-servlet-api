@@ -5,9 +5,6 @@
 
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-  <p>
-    Welcome to Expert-Soft training!
-  </p>
   <c:if test="${not empty param.message and empty error}">
     <p class="success">${param.message}</p>
   </c:if>
@@ -16,9 +13,13 @@
       There was an error adding to cart
     </p>
   </c:if>
+  <p></p>
   <form>
     <input name="query" value="${param.query}">
     <button>Search</button>
+  </form>
+  <form action="${pageContext.servletContext.contextPath}/advanced_search">
+    <button>Advanced search</button>
   </form>
   <table>
     <thead>

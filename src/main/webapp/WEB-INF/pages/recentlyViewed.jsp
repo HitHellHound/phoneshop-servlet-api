@@ -4,7 +4,7 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="recentlyViewed" type="com.es.phoneshop.model.features.RecentlyViewedProducts" scope="request"/>
-<c:if test="${not empty recentlyViewed}">
+<c:if test="${not empty recentlyViewed.products}">
     <p>
     <h2>Recently viewed</h2>
     <table>

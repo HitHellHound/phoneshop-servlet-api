@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -36,9 +37,40 @@ public class ArrayListProductDao implements ProductDao {
     @Override
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         return products.stream()
-                .filter(product -> query == null || query.equals("") || matchesWithQuery(query, product.getDescription()) > 0)
+                .filter(product -> query == null || query.equals("") ||
+                        matchesWithQuery(query, product.getDescription(), QueryOption.anyWords) > 0)
                 .sorted(queryComparator(query, sortField, sortOrder))
                 .filter(product -> product.getPrice() != null && product.getStock() > 0)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> advancedFindProducts(String query, QueryOption queryOption, BigDecimal minPrice, BigDecimal maxPrice) {
+        return products.stream()
+                .filter(product -> query == null || query.equals("") ||
+                        matchesWithQuery(query, product.getDescription(), queryOption) > 0)
+                .sorted(queryComparator(query, null, null))
+                .filter(product -> product.getPrice() != null)
+                .filter(product -> {
+                    if (minPrice != null) {
+                        if (product.getPrice().compareTo(minPrice) >= 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+                .filter(product -> {
+                    if (maxPrice != null) {
+                        if (maxPrice.compareTo(product.getPrice()) >= 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -67,15 +99,20 @@ public class ArrayListProductDao implements ProductDao {
         maxId = 0;
     }
 
-    private long matchesWithQuery(String query, String name) {
+    private long matchesWithQuery(String query, String name, QueryOption queryOption) {
         String lcName = name.toLowerCase();
-        return Arrays.stream(query.toLowerCase().split("[\\p{Blank}\\p{Punct}]+"))
+        long count = Arrays.stream(query.toLowerCase().split("[\\p{Blank}\\p{Punct}]+"))
                 .filter(queryWord -> {
                     Pattern pattern = Pattern.compile("(^|[\\p{Blank}\\p{Punct}])" + queryWord + "([\\p{Blank}\\p{Punct}]|$)");
                     Matcher matcher = pattern.matcher(lcName);
                     return !queryWord.equals("") && matcher.find();
                 })
                 .count();
+        long countOfQueryWords = query.toLowerCase().split("[\\p{Blank}\\p{Punct}]+").length;
+        if (queryOption == QueryOption.allWords && count < countOfQueryWords) {
+            count = 0;
+        }
+        return count;
     }
 
     private Comparator<Product> queryComparator(String query, SortField sortField, SortOrder sortOrder) {
@@ -86,7 +123,7 @@ public class ArrayListProductDao implements ProductDao {
                 return (Comparable) product.getPrice();
             }
             if (query != null && !query.equals("")) {
-                return (Comparable) matchesWithQuery(query, product.getDescription());
+                return (Comparable) matchesWithQuery(query, product.getDescription(), QueryOption.anyWords);
             } else {
                 return (Comparable) 0;
             }
